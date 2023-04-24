@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace HolidaySearch.Models
 {
-    internal class HolidaySearchResult
+    public class HolidaySearchResult
     {
+        public double TotalPrice { get; }
+        public Flight Flight { get; }
+        public Hotel Hotel { get; }
+        public HolidaySearchResult(double totalPrice, Flight flight, Hotel hotel)
+        {
+            TotalPrice = totalPrice;
+            Flight = flight;
+            Hotel = hotel;
+        }
     }
 }
