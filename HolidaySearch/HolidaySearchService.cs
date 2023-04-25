@@ -105,18 +105,6 @@ namespace HolidaySearch
                         flightMatchDictionary.Add(flight.Id, 1);
                     }
                 }
-
-                if (search.DepartureDate == flight.DepartureDate)
-                {
-                    if (flightMatchDictionary.ContainsKey(flight.Id))
-                    {
-                        flightMatchDictionary[flight.Id]++;
-                    }
-                    else
-                    {
-                        flightMatchDictionary.Add(flight.Id, 1);
-                    }
-                }
             }
 
             return flightMatchDictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
