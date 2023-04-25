@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace HolidaySearch
 {
@@ -23,7 +24,10 @@ namespace HolidaySearch
                 throw new ArgumentNullException("Invalid Search Information Provided.");
             }
 
-            var matchingFlights = MatchingFlights(search);
+            var inRangeFlights = InRangeFlights(search.DepartureDate, search.Duration);
+
+            //if no flights in range check all flights for further matching criteria
+            var matchingFlights = MatchingFlights(search, inRangeFlights.Any() ? inRangeFlights : Flights);
             var matchingHotels = MatchingHotels(search);
 
             var flights = matchingFlights.Select(flight => Flights.Single(x => x.Id == flight.Key)).ToList();
@@ -34,6 +38,31 @@ namespace HolidaySearch
             var bestHotelPrice = int.Parse(bestFlight.Price) + (bestHotel.PricePerNight * search.Duration);
 
             return new HolidaySearchResult(bestHotelPrice, bestFlight, bestHotel, flights, hotels);
+        }
+
+        private static IEnumerable<Flight> InRangeFlights(string departureDate, int duration)
+        {
+            var dateTimeDepart = DateTime.ParseExact(departureDate, "yyyy/MM/dd",
+                System.Globalization.CultureInfo.InvariantCulture);
+
+            //Create valid range based of flights shown - using duration of holiday as basis of this
+            var lowestDate = dateTimeDepart.AddDays(-duration);
+            var highestDate = dateTimeDepart.AddDays(duration);
+
+            var inRangeFlights = new List<Flight>();
+
+            foreach (var flight in Flights)
+            {
+                var flightDepart = DateTime.ParseExact(flight.DepartureDate, "yyyy-MM-dd",
+                    System.Globalization.CultureInfo.InvariantCulture);
+
+                if ((lowestDate <= flightDepart) && (flightDepart <= highestDate))
+                {
+                    inRangeFlights.Add(flight);
+                }
+            }
+
+            return inRangeFlights;
         }
 
         private static Flight BestValueFlight(Dictionary<int, int> matchingFlights)
@@ -54,11 +83,11 @@ namespace HolidaySearch
             return hotels.OrderBy(x => x.PricePerNight).FirstOrDefault();
         }
 
-        private static Dictionary<int, int> MatchingFlights(Models.HolidaySearch search)
+        private static Dictionary<int, int> MatchingFlights(Models.HolidaySearch search, IEnumerable<Flight> inRangeFlights)
         {
             var flightMatchDictionary = new Dictionary<int, int>();
 
-            foreach (var flight in Flights)
+            foreach (var flight in inRangeFlights)
             {
                 if (search.TravelingTo.Contains(flight.TravelingTo))
                 {

@@ -28,7 +28,7 @@ namespace HolidaySearchTests
             Assert.Equal(2, results.BestMatchingFlight.Id);
             Assert.Equal(9, results.BestMatchingHotel.Id);
 
-            Assert.Equal(10, results.AllMatchingFlights.Count());
+            Assert.Equal(4, results.AllMatchingFlights.Count());
             Assert.Equal(7, results.AllMatchingHotels.Count());
             Assert.Equal(826, results.TotalPriceForBestMatch);
         }
@@ -62,7 +62,7 @@ namespace HolidaySearchTests
             Assert.Equal(7, results.BestMatchingFlight.Id);
             Assert.Equal(6, results.BestMatchingHotel.Id);
 
-            Assert.Equal(2, results.AllMatchingFlights.Count());
+            Assert.Equal(1, results.AllMatchingFlights.Count());
             Assert.Equal(6, results.AllMatchingHotels.Count());
             Assert.Equal(1175, results.TotalPriceForBestMatch);
         }
