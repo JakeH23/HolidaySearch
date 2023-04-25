@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HolidaySearch.Models
+﻿namespace HolidaySearch.Models
 {
     public class HolidaySearchResult
     {
-        public double TotalPrice { get; }
-        public Flight Flight { get; }
-        public Hotel Hotel { get; }
-        public HolidaySearchResult(double totalPrice, Flight flight, Hotel hotel)
+        public int TotalPriceForBestMatch { get; }
+        public Flight BestMatchingFlight { get; }
+        public Hotel BestMatchingHotel { get; }
+        public IEnumerable<Flight> AllMatchingFlights { get; }
+        public IEnumerable<Hotel> AllMatchingHotels { get; }
+
+        public HolidaySearchResult(int totalPriceForBestMatch, Flight bestMatchingFlight, Hotel bestMatchingHotel, IEnumerable<Flight> allMatchingFlights, IEnumerable<Hotel> allMatchingHotels)
         {
-            TotalPrice = totalPrice;
-            Flight = flight;
-            Hotel = hotel;
+            TotalPriceForBestMatch = totalPriceForBestMatch;
+            BestMatchingFlight = bestMatchingFlight;
+            BestMatchingHotel = bestMatchingHotel;
+            AllMatchingFlights = allMatchingFlights;
+            AllMatchingHotels = allMatchingHotels;
         }
     }
 }
