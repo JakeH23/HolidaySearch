@@ -30,11 +30,15 @@ namespace HolidaySearch
             var matchingFlights = MatchingFlights(search, inRangeFlights.Any() ? inRangeFlights : Flights);
             var matchingHotels = MatchingHotels(search);
 
+            //TODO - need checks around there being no flights/hotels
             var flights = matchingFlights.Select(flight => Flights.Single(x => x.Id == flight.Key)).ToList();
             var hotels = matchingHotels.Select(hotel => Hotels.Single(x => x.Id == hotel.Key)).ToList();
 
+            //TODO - need checks around there being no flights/hotels
             var bestFlight = BestValueFlight(matchingFlights);
             var bestHotel = BestValueHotel(matchingHotels);
+
+            //TODO - precautionary checks that flight has price property set
             var bestHotelPrice = int.Parse(bestFlight.Price) + (bestHotel.PricePerNight * search.Duration);
 
             return new HolidaySearchResult(bestHotelPrice, bestFlight, bestHotel, flights, hotels);
@@ -133,6 +137,7 @@ namespace HolidaySearch
                     }
                 }
 
+                //TODO - could to acceptable date range on these dates too
                 if (search.DepartureDate == hotel.ArriveDate)
                 {
                     if (hotelMatchDictionary.ContainsKey(hotel.Id))
