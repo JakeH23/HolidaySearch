@@ -23,17 +23,38 @@ namespace HolidaySearch
                 throw new ArgumentNullException("Invalid Search Information Provided.");
             }
 
-            var flights = MatchingFlights(search);
-            var hotels = MatchingHotels(search);
+            var matchingFlights = MatchingFlights(search);
+            var matchingHotels = MatchingHotels(search);
 
-            var bestFlight = flights.First();
-            var bestHotel = hotels.First();
+            var flights = matchingFlights.Select(flight => Flights.Single(x => x.Id == flight.Key)).ToList();
+            var hotels = matchingHotels.Select(hotel => Hotels.Single(x => x.Id == hotel.Key)).ToList();
+
+            var bestFlight = BestValueFlight(matchingFlights);
+            var bestHotel = BestValueHotel(matchingHotels);
             var bestHotelPrice = int.Parse(bestFlight.Price) + (bestHotel.PricePerNight * search.Duration);
 
             return new HolidaySearchResult(bestHotelPrice, bestFlight, bestHotel, flights, hotels);
         }
 
-        private static IEnumerable<Flight> MatchingFlights(Models.HolidaySearch search)
+        private static Flight BestValueFlight(Dictionary<int, int> matchingFlights)
+        {
+            var idsOfBestMatched = matchingFlights.Where(x => x.Value == matchingFlights.Values.Max()).Select(x => x.Key).ToList();
+
+            var flights = Flights.Where(x => idsOfBestMatched.Any(y => y == x.Id));
+
+            return flights.OrderBy(x => int.Parse(x.Price)).FirstOrDefault();
+        }
+
+        private static Hotel BestValueHotel(Dictionary<int, int> matchingHotels)
+        {
+            var idsOfBestMatched = matchingHotels.Where(x => x.Value == matchingHotels.Values.Max()).Select(x => x.Key).ToList();
+
+            var hotels = Hotels.Where(x => idsOfBestMatched.Any(y => y == x.Id));
+
+            return hotels.OrderBy(x => x.PricePerNight).FirstOrDefault();
+        }
+
+        private static Dictionary<int, int> MatchingFlights(Models.HolidaySearch search)
         {
             var flightMatchDictionary = new Dictionary<int, int>();
 
@@ -69,11 +90,10 @@ namespace HolidaySearch
                 }
             }
 
-            var orderedFlights = flightMatchDictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-
-            return orderedFlights.Select(flight => Flights.Single(x => x.Id == flight.Key)).ToList();
+            return flightMatchDictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
         }
-        private static IEnumerable<Hotel> MatchingHotels(Models.HolidaySearch search)
+
+        private static Dictionary<int, int> MatchingHotels(Models.HolidaySearch search)
         {
             var hotelMatchDictionary = new Dictionary<int, int>();
 
@@ -109,9 +129,7 @@ namespace HolidaySearch
                 }
             }
 
-            var orderedHotels = hotelMatchDictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-
-            return orderedHotels.Select(hotel => Hotels.Single(x => x.Id == hotel.Key)).ToList();
+            return hotelMatchDictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
         }
     }
 }

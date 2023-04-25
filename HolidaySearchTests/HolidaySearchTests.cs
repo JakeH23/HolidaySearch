@@ -15,7 +15,7 @@ namespace HolidaySearchTests
             var sut = GetHolidaySearchService();
             Assert.Throws<ArgumentNullException>(() => sut.FindBestValueHolidays(null));
         }
-        
+
         [Fact]
         public void WhereSearchHasAllSpecificValues_BestValueResultShouldBeDisplayed()
         {
@@ -27,12 +27,16 @@ namespace HolidaySearchTests
 
             Assert.Equal(2, results.BestMatchingFlight.Id);
             Assert.Equal(9, results.BestMatchingHotel.Id);
+
+            Assert.Equal(10, results.AllMatchingFlights.Count());
+            Assert.Equal(7, results.AllMatchingHotels.Count());
+            Assert.Equal(826, results.TotalPriceForBestMatch);
         }
 
         [Fact]
-        public void WhereSearchHasMultipleAirportsForAnArea_BestValueResultShouldBeDisplayed()
+        public void WhereSearchHasMultipleDepartureAirportsForAnArea_BestValueResultShouldBeDisplayed()
         {
-            var searchData = new HolidaySearch.Models.HolidaySearch(new List<string> { "LGW" }, new List<string> { "PMI" }, "2023/06/01", 10);
+            var searchData = new HolidaySearch.Models.HolidaySearch(new List<string> { "LGW", "LTN" }, new List<string> { "PMI" }, "2023/06/01", 10);
 
             var sut = GetHolidaySearchService();
 
@@ -40,10 +44,14 @@ namespace HolidaySearchTests
 
             Assert.Equal(6, results.BestMatchingFlight.Id);
             Assert.Equal(5, results.BestMatchingHotel.Id);
+
+            Assert.Equal(6, results.AllMatchingFlights.Count());
+            Assert.Equal(5, results.AllMatchingHotels.Count());
+            Assert.Equal(675, results.TotalPriceForBestMatch);
         }
 
         [Fact]
-        public void WhereSearchHasAnyAirport_BestValueResultShouldBeDisplayed()
+        public void WhereSearchHasAnyAirportDeparture_BestValueResultShouldBeDisplayed()
         {
             var searchData = new HolidaySearch.Models.HolidaySearch(new List<string>(), new List<string> { "LPA" }, "2022/11/10", 14);
 
@@ -53,8 +61,12 @@ namespace HolidaySearchTests
 
             Assert.Equal(7, results.BestMatchingFlight.Id);
             Assert.Equal(6, results.BestMatchingHotel.Id);
+
+            Assert.Equal(2, results.AllMatchingFlights.Count());
+            Assert.Equal(6, results.AllMatchingHotels.Count());
+            Assert.Equal(1175, results.TotalPriceForBestMatch);
         }
 
-
+        //
     }
 }
