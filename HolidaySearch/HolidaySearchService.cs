@@ -1,9 +1,4 @@
 ﻿using HolidaySearch.Models;
-using System.Collections.Generic;
-using System;
-using System.Collections;
-using System.Linq;
-using Newtonsoft.Json.Linq;
 
 namespace HolidaySearch
 {
@@ -21,7 +16,7 @@ namespace HolidaySearch
         {
             if (search == null)
             {
-                throw new ArgumentNullException("Invalid Search Information Provided.");
+                throw new ArgumentNullException($"{nameof(FindBestValueHolidays)} - Invalid Search Information Provided.");
             }
 
             var inRangeFlights = InRangeFlights(search.DepartureDate, search.Duration);

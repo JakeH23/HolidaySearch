@@ -9,19 +9,17 @@ public static class DataService
 
     public static IEnumerable<Flight> FlightsData()
     {
-        using (StreamReader r = new StreamReader(Path.Combine(LocalPath, @"TestData\flights.json")))
-        {
-            string json = r.ReadToEnd();
-            return JsonConvert.DeserializeObject<List<Flight>>(json);
-        }
-    }    
-        
+        using StreamReader r = new StreamReader(Path.Combine(LocalPath, @"TestData\flights.json"));
+        string json = r.ReadToEnd();
+        return JsonConvert.DeserializeObject<List<Flight>>(json) ?? new List<Flight>();
+    }
+
     public static IEnumerable<Hotel> HotelsData()
     {
         using (StreamReader r = new StreamReader(Path.Combine(LocalPath, @"TestData\hotels.json")))
         {
             string json = r.ReadToEnd();
-            return JsonConvert.DeserializeObject<List<Hotel>>(json);
+            return JsonConvert.DeserializeObject<List<Hotel>>(json) ?? new List<Hotel>();
         }
     }
 }
