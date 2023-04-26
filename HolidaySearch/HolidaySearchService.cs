@@ -27,16 +27,16 @@ namespace HolidaySearch
             var inRangeFlights = InRangeFlights(search.DepartureDate, search.Duration);
 
             //if no flights in range check all flights for further matching criteria
-            var matchingFlights = MatchingFlights(search, inRangeFlights.Any() ? inRangeFlights : Flights);
-            var matchingHotels = MatchingHotels(search);
+            var matchingFlightsDictionary = MatchingFlights(search, inRangeFlights.Any() ? inRangeFlights : Flights);
+            var matchingHotelsDictionary = MatchingHotels(search);
 
             //TODO - need checks around there being no flights/hotels
-            var flights = matchingFlights.Select(flight => Flights.Single(x => x.Id == flight.Key)).ToList();
-            var hotels = matchingHotels.Select(hotel => Hotels.Single(x => x.Id == hotel.Key)).ToList();
+            var flights = matchingFlightsDictionary.Select(flight => Flights.Single(x => x.Id == flight.Key)).ToList();
+            var hotels = matchingHotelsDictionary.Select(hotel => Hotels.Single(x => x.Id == hotel.Key)).ToList();
 
             //TODO - need checks around there being no flights/hotels
-            var bestFlight = BestValueFlight(matchingFlights);
-            var bestHotel = BestValueHotel(matchingHotels);
+            var bestFlight = BestValueFlight(matchingFlightsDictionary);
+            var bestHotel = BestValueHotel(matchingHotelsDictionary);
 
             //TODO - precautionary checks that flight has price property set
             var bestHotelPrice = int.Parse(bestFlight.Price) + (bestHotel.PricePerNight * search.Duration);
